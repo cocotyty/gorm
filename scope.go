@@ -591,7 +591,11 @@ func (scope *Scope) buildCondition(clause map[string]interface{}, include bool) 
 		scopeQuotedTableName := newScope.QuotedTableName()
 		for _, field := range newScope.Fields() {
 			if !field.IsIgnored && !field.IsBlank {
-				sqls = append(sqls, fmt.Sprintf("(%v.%v %s %v)", scopeQuotedTableName, scope.Quote(field.DBName), equalSQL, scope.AddToVars(field.Field.Interface())))
+				if _, ok := field.TagSettings["like"]; ok {
+					sqls = append(sqls, fmt.Sprintf("(%v.%v %s %v)", scopeQuotedTableName, scope.Quote(field.DBName), "like", scope.AddToVars("%"+fmt.Sprint(field.Field.Interface())+"%")))
+				} else {
+					sqls = append(sqls, fmt.Sprintf("(%v.%v %s %v)", scopeQuotedTableName, scope.Quote(field.DBName), equalSQL, scope.AddToVars(field.Field.Interface())))
+				}
 			}
 		}
 		return strings.Join(sqls, " AND ")
