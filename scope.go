@@ -592,7 +592,7 @@ func (scope *Scope) buildCondition(clause map[string]interface{}, include bool) 
 		for _, field := range newScope.Fields() {
 			if !field.IsIgnored && !field.IsBlank {
 				if _,ok:=field.TagSettings["LIKE"];ok{
-					sqls = append(sqls, fmt.Sprintf("(%v.%v %s %v)", scopeQuotedTableName, scope.Quote(field.DBName), "like", scope.AddToVars("%"+fmt.Sprint(field.Field.Interface())+"%")))
+					sqls = append(sqls, fmt.Sprintf("(%v.%v %s %v)", scopeQuotedTableName, scope.Quote(field.DBName), "LIKE", scope.AddToVars("%"+fmt.Sprint(field.Field.Interface())+"%")))
 				}else{
 					sqls = append(sqls, fmt.Sprintf("(%v.%v %s %v)", scopeQuotedTableName, scope.Quote(field.DBName), equalSQL, scope.AddToVars(field.Field.Interface())))
 				}
